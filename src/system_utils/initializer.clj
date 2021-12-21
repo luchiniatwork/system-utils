@@ -38,23 +38,28 @@
                       i))
             m))
 
-(defn read-config []
-  (let [base (-> "base.edn" config-resource read-file)
-        env (or (ambiente/env :env) default-env)
-        specialized-file (str env  ".edn")
-        specialized (-> specialized-file config-resource read-file)
-        merged-config (merge base (cleanup-specialized specialized))
-        replaced-config (placeholder-replace merged-config specialized)]
-    (when (nil? base)
-      (throw (ex-info (str "Unable to load base config: base.edn")
-                      {:anomaly/category ::invalid-system-config})))
-    (when (nil? specialized)
-      (throw (ex-info (str "Unable to load specialized config: " specialized-file)
-                      {:anomaly/category ::invalid-system-config})))
-    (when (nil? replaced-config)
-      (throw (ex-info (str "Unable to merge config")
-                      {:anomaly/category ::invalid-system-config})))
-    replaced-config))
+(defn read-config
+  ([]
+   (read-config nil))
+  ([env-override]
+   (let [base (-> "base.edn" config-resource read-file)
+         env (or env-override
+                 (ambiente/env :env)
+                 default-env)
+         specialized-file (str env  ".edn")
+         specialized (-> specialized-file config-resource read-file)
+         merged-config (merge base (cleanup-specialized specialized))
+         replaced-config (placeholder-replace merged-config specialized)]
+     (when (nil? base)
+       (throw (ex-info (str "Unable to load base config: base.edn")
+                       {:anomaly/category ::invalid-system-config})))
+     (when (nil? specialized)
+       (throw (ex-info (str "Unable to load specialized config: " specialized-file)
+                       {:anomaly/category ::invalid-system-config})))
+     (when (nil? replaced-config)
+       (throw (ex-info (str "Unable to merge config")
+                       {:anomaly/category ::invalid-system-config})))
+     replaced-config)))
 
 (def system nil)
 
