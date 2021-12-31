@@ -12,7 +12,7 @@
 
   ;; utilities
   metosin/jsonista                                {:mvn/version "0.3.3"}
-  borkdude/edamame                                {:mvn/version "0.0.11"}
+  borkdude/edamame                                {:mvn/version "0.0.19"}
   luchiniatwork/ambiente                          {:mvn/version "0.1.4"}
   luchiniatwork/orzo                              {:mvn/version "0.1.11"}
   net.clojars.luchiniatwork/anomalies             {:mvn/version "0.0.2"}}

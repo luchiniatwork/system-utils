@@ -63,11 +63,19 @@
 
 (def system nil)
 
-(defn start-system []
-  (let [config (read-config)]
-    (ig/load-namespaces config)
-    (alter-var-root #'system (fn [_] (ig/init config)))
-    :started))
+(defn start-system
+  ([]
+   (start-system nil))
+  ([{:keys [require-namespaces
+            init-fn]}]
+   (doseq [req require-namespaces]
+     (-> req symbol require))
+   (when init-fn
+     (init-fn))
+   (let [config (read-config)]
+     (ig/load-namespaces config)
+     (alter-var-root #'system (fn [_] (ig/init config)))
+     :started)))
 
 (defn stop-system []
   (when (and (bound? #'system)
