@@ -67,12 +67,13 @@
   ([]
    (start-system nil))
   ([{:keys [require-namespaces
-            init-fn]}]
+            init-fn
+            env-override]}]
    (doseq [req require-namespaces]
      (-> req symbol require))
    (when init-fn
      (init-fn))
-   (let [config (read-config)]
+   (let [config (read-config env-override)]
      (ig/load-namespaces config)
      (alter-var-root #'system (fn [_] (ig/init config)))
      :started)))
